@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title }} - Dapur Mamina</title>
+    {{-- Menggunakan variabel $title untuk judul halaman --}}
+    <title>{{ $title ?? 'Dashboard' }} - Dapur Mamina</title>
     {{-- Menggunakan CDN Tailwind CSS untuk kemudahan --}}
     <script src="https://cdn.tailwindcss.com"></script>
     {{-- Konfigurasi warna kustom Tailwind --}}
@@ -42,36 +43,42 @@
             <nav class="flex-1 px-4 py-6 space-y-2">
                 <p class="px-4 text-xs text-gray-400 uppercase tracking-wider">Main</p>
                 {{-- Link Dashboard --}}
-                <a href="{{ url('/') }}" class="flex items-center px-4 py-2.5 bg-brand-orange-dark/50 rounded-lg font-semibold">
+                <a href="{{ url('/') }}" class="flex items-center px-4 py-2.5 rounded-lg font-semibold
+                    {{ request()->is('/') ? 'bg-brand-orange-dark/50' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-chart-pie w-6 text-center"></i>
                     <span>Dashboard</span>
                 </a>
                 {{-- Link Kasir --}}
-                <a href="{{ url('/kasir') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                <a href="{{ url('/kasir') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->is('kasir') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-cash-register w-6 text-center"></i>
                     <span>Kasir</span>
                 </a>
 
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Laporan</p>
                  {{-- Link Produk (ke route produk.index) --}}
-                 <a href="{{ route('produk.index') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                 <a href="{{ route('produk.index') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->is('produk*') || request()->is('tambah-produk') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-file-alt w-6 text-center"></i>
                     <span>Produk</span>
                 </a>
 
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Inventori</p>
-                {{-- Link Daftar Stok (sesuai permintaan ke masuk-stok) --}}
-                <a href="{{ url('/masuk-stok') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
-                     <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
+                {{-- Link Daftar Stok (ke route /daftar-stok) --}}
+                <a href="{{ url('/daftar-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->is('daftar-stok') || request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
+                    <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
                     <span>Daftar Stok</span>
                 </a>
-                {{-- Link Masuk Stok (ke masuk-stok) --}}
-                 <a href="{{ url('/masuk-stok') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                {{-- Link Masuk Stok (ke route /masuk-stok) --}}
+                 <a href="{{ url('/masuk-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->is('masuk-stok') || request()->is('tambah-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-dolly w-6 text-center"></i>
                     <span>Masuk Stok</span>
                 </a>
-                {{-- Link Opname Stok (sesuai permintaan ke daftar-stok) --}}
-                <a href="{{ url('/daftar-stok') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                {{-- Link Opname Stok (ke route /opname-stok) --}}
+                <a href="{{ url('/opname-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-tasks w-6 text-center"></i>
                     <span>Opname Stok</span>
                 </a>
@@ -86,7 +93,8 @@
         <div class="flex-1 flex flex-col">
             <header class="h-20 bg-brand-orange flex items-center justify-end px-8">
                  <div class="bg-brand-orange-dark px-6 py-2 rounded-lg shadow-md">
-                    <h1 class="text-xl font-bold text-white">{{ $header_title }}</h1>
+                    {{-- Menggunakan variabel $header_title untuk judul di header --}}
+                    <h1 class="text-xl font-bold text-white">{{ $header_title ?? 'Dashboard' }}</h1>
                 </div>
             </header>
 
