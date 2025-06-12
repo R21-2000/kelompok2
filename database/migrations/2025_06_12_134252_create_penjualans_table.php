@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penjualan', function (Blueprint $table) {
-            $table->id();
-            $table->string('no_transaksi')->unique();
-            $table->foreignId('pengguna_id')->constrained('penggunas')->onDelete('cascade');
-            $table->string('nama_pelanggan')->nullable();
-            $table->dateTime('tanggal_penjualan');
-            $table->string('metode_pembayaran'); // contoh: tunai, QRIS
-            $table->timestamps();
-        });
+        Schema::create('penjualans', function (Blueprint $table) {
+    $table->id();
+    $table->string('no_transaksi');
+    $table->foreignId('pengguna_id')->constrained('penggunas')->onDelete('cascade');
+    $table->string('nama_pelanggan');
+    $table->date('tanggal_penjualan');
+    $table->string('metode_pembayaran');
+    $table->timestamps();
+});
+
     }
 
     /**
