@@ -41,31 +41,37 @@
 
             <nav class="flex-1 px-4 py-6 space-y-2">
                 <p class="px-4 text-xs text-gray-400 uppercase tracking-wider">Main</p>
-                <a href="#" class="flex items-center px-4 py-2.5 bg-brand-orange-dark/50 rounded-lg font-semibold">
+                {{-- Link Dashboard --}}
+                <a href="{{ url('/') }}" class="flex items-center px-4 py-2.5 bg-brand-orange-dark/50 rounded-lg font-semibold">
                     <i class="fa-solid fa-chart-pie w-6 text-center"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                {{-- Link Kasir --}}
+                <a href="{{ url('/kasir') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
                     <i class="fa-solid fa-cash-register w-6 text-center"></i>
                     <span>Kasir</span>
                 </a>
 
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Laporan</p>
-                 <a href="#" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                 {{-- Link Produk (ke route produk.index) --}}
+                 <a href="{{ route('produk.index') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
                     <i class="fa-solid fa-file-alt w-6 text-center"></i>
                     <span>Produk</span>
                 </a>
 
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Inventori</p>
-                <a href="#" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                {{-- Link Daftar Stok (sesuai permintaan ke masuk-stok) --}}
+                <a href="{{ url('/masuk-stok') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
                      <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
                     <span>Daftar Stok</span>
                 </a>
-                 <a href="#" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                {{-- Link Masuk Stok (ke masuk-stok) --}}
+                 <a href="{{ url('/masuk-stok') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
                     <i class="fa-solid fa-dolly w-6 text-center"></i>
                     <span>Masuk Stok</span>
                 </a>
-                <a href="#" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
+                {{-- Link Opname Stok (sesuai permintaan ke daftar-stok) --}}
+                <a href="{{ url('/daftar-stok') }}" class="flex items-center px-4 py-2.5 hover:bg-white/10 rounded-lg">
                     <i class="fa-solid fa-tasks w-6 text-center"></i>
                     <span>Opname Stok</span>
                 </a>
@@ -80,7 +86,7 @@
         <div class="flex-1 flex flex-col">
             <header class="h-20 bg-brand-orange flex items-center justify-end px-8">
                  <div class="bg-brand-orange-dark px-6 py-2 rounded-lg shadow-md">
-                    <h1 class="text-xl font-bold text-white">Dashboard</h1>
+                    <h1 class="text-xl font-bold text-white">@yield('header_title', 'Dashboard')</h1>
                 </div>
             </header>
 
