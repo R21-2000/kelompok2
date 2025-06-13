@@ -24,7 +24,7 @@
             {{-- Input Nama Produk --}}
             <label for="nama_produk" class="text-sm font-medium text-gray-700 self-center">Nama Produk</label>
             <div class="md:col-span-2">
-                <input type="text" name="nama_produk" id="nama_produk" placeholder="Contoh: Roti Coklat" class="w-full border border-gray-300 rounded-md shadow-sm px-4 py-2 focus:ring-brand-orange focus:border-brand-orange">
+                <input type="text" name="nama_produk" id="nama_produk" required ...>
             </div>
 
             {{-- Input Jenis --}}

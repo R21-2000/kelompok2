@@ -64,7 +64,7 @@
 
                 <div class="flex justify-end">
                     {{-- Tombol "Tambah Transaksi" sekarang mengarah ke rute /laporan-transaksi --}}
-                    <button onclick="window.location.href='{{ url('/laporan-transaksi;" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-6 rounded-md shadow-md transition duration-300">
+                    <button onclick="window.location.href='{{ url('/laporan-transaksi" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-6 rounded-md shadow-md transition duration-300">
                         Tambah Transaksi
                     </button>
                 </div>

@@ -7,17 +7,19 @@ use App\Models\Produk;
 use Illuminate\Http\Request;
 
 /**
- * StokController handles the management of stock resources.
+ * Controller untuk manajemen stok.
  */
 class StokController
 {
-    /**
-     * Display a listing of the resource.
+     /**
+     * Tampilkan halaman daftar stok opname.
      */
     public function daftar() {
     return view('OpnameStok.daftar_stok');
 }
-
+    /**
+     * Tampilkan semua stok masuk.
+     */
     public function index()
     {
         $stoks = Stok::with('produk')->get();
@@ -25,7 +27,7 @@ class StokController
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Tampilkan form tambah stok baru.
      */
     public function create()
     {
@@ -34,7 +36,7 @@ class StokController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Simpan stok baru atau update jika sudah ada.
      */
     public function store(Request $request)
     {
@@ -46,15 +48,19 @@ class StokController
         $existing = Stok::where('produk_id', $request->produk_id)->first();
 
         if ($existing) {
+            // Jika stok produk sudah ada, tambahkan jumlahnya
             $existing->jumlah += $request->jumlah;
             $existing->save();
         } else {
+            // Jika belum ada, buat stok baru
             Stok::create($request->only(['produk_id', 'jumlah']));
         }
 
         return redirect()->route('stok.index');
     }
-
+    /**
+     * Tampilkan daftar stok (bisa filter min & max jumlah).
+     */
     public function list(Request $request)
     {
         $query = Stok::with('produk');
@@ -74,7 +80,7 @@ class StokController
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Tampilkan form edit stok.
      */
     public function edit(Stok $stok)
     {
@@ -82,7 +88,7 @@ class StokController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update jumlah stok.
      */
     public function update(Request $request, Stok $stok)
     {
@@ -91,16 +97,22 @@ class StokController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Hapus stok.
      */
     public function destroy(Stok $stok)
     {
          $stok->delete();
         return back();
     }
+    /**
+     * Shortcut ke index() untuk stok masuk.
+     */
     public function masuk() {
         return $this->index();
     }
+    /**
+     * Tampilkan halaman stok opname.
+     */
     public function opname() {
     $stoks = Stok::with('produk')->get();
     return view('OpnameStok.opname_stok', compact('stoks'));

@@ -5,13 +5,11 @@
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h2 class="text-3xl font-bold text-gray-800">Daftar Stok</h2>
         {{-- Tombol sekarang mengarah ke rute /tambah-stok dan teksnya diubah --}}
-        <button
-    type="button"
-    data-href="{{ url('/opname-stok') }}"
-    onclick="window.location.href=this.dataset.href;"
-    class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 flex items-center">
-    <i class="fa-solid fa-plus mr-2"></i> Tambah Stok
-</button>
+        <a href="{{ url('/opname-stok') }}"
+   class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 flex items-center">
+   <i class="fa-solid fa-plus mr-2"></i> Tambah Stok
+</a>
+
     </div>
 
     {{-- Filter dan Tabel Daftar Stok --}}

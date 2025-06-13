@@ -12,27 +12,30 @@ use DB;
 
 class DashboardController extends Controller
 {
+    /**
+     * Tampilkan data ringkasan di dashboard.
+     */
     public function index(Request $request)
     {
-        // Filter tanggal dari request jika ada
+        // Ambil tanggal awal & akhir dari input, default ke awal & akhir bulan ini
         $start = $request->start_date ?? Carbon::now()->startOfMonth()->toDateString();
         $end = $request->end_date ?? Carbon::now()->endOfMonth()->toDateString();
 
-        // Stok terendah
+        // Ambil tanggal awal & akhir dari input, default ke awal & akhir bulan ini
         $stokTerendah = Stok::with('produk')
             ->orderBy('stok', 'asc')
             ->limit(5)
             ->get();
 
-        // Jumlah transaksi
+        // Hitung jumlah transaksi pada periode ini
         $jumlahTransaksi = Penjualan::whereBetween('tanggal_penjualan', [$start, $end])->count();
 
-        // Total produk terjual
+        // Hitung total produk terjual
         $produkTerjual = PenjualanDetail::whereHas('penjualan', function ($q) use ($start, $end) {
             $q->whereBetween('tanggal_penjualan', [$start, $end]);
         })->sum('qty');
 
-        // Total pendapatan (penjualan yang sudah dibayar)
+        // Hitung total pendapatan dari penjualan terbayar
         $totalPendapatan = Penjualan::whereBetween('tanggal_penjualan', [$start, $end])
             ->whereNotNull('waktu_bayar')
             ->with('penjualanDetails')
@@ -40,11 +43,13 @@ class DashboardController extends Controller
             ->flatMap->details
             ->sum('subtotal');
 
-        // Penjualan terbayar
+        // Hitung jumlah penjualan yang sudah dibayar
         $penjualanTerbayar = Penjualan::whereBetween('tanggal_penjualan', [$start, $end])
             ->whereNotNull('waktu_bayar')
             ->count();
 
+
+        // Kirim semua data ke view dashboard
         return view('dashboard.index', [
             'stokTerendah' => $stokTerendah,
             'jumlahTransaksi' => $jumlahTransaksi,

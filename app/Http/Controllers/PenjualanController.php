@@ -9,15 +9,22 @@ use App\Models\Pengguna;
 
 class PenjualanController
 {
+    /**
+     * Tampilkan halaman kasir beserta daftar penjualan dan detailnya.
+     */
     public function kasir()
     {
         $penjualans = Penjualan::with('penjualanDetails', 'pengguna')->get();
         return view('kasir', compact('penjualans'));
     }
-
+    /**
+     * Tampilkan halaman laporan transaksi penjualan.
+     * Bisa difilter berdasarkan rentang tanggal.
+     */
     public function laporan(Request $request)
     {
         $query = Penjualan::with(['pengguna', 'penjualanDetails']);
+        // Jika filter tanggal diisi, filter data penjualan
         if ($request->filled(['from', 'to'])) {
             $query->whereBetween('created_at', [$request->from, $request->to]);
         }
@@ -80,6 +87,9 @@ class PenjualanController
     {
         //
     }
+    /**
+     * Endpoint untuk filter laporan
+     */
     public function filterLaporan(Request $request)
     {
     // Logika sama seperti laporan()

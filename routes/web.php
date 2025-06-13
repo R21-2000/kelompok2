@@ -26,7 +26,7 @@ Route::get('/stok/list', [StokController::class, 'list'])->name('stok.list');
 
 
 Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('kasir');
-Route::get('/laporan', [PenjualanController::class, 'laporan'])->name('laporan');
+Route::get('/laporan-transaksi', [PenjualanController::class, 'laporan'])->name('laporan');
 Route::get('/laporan/filter', [PenjualanController::class, 'filterLaporan'])->name('laporan.filter');
 
 Route::get('/daftar-stok', function() {

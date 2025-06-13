@@ -25,7 +25,7 @@
         {{-- Card Total Pendapatan --}}
         <div class="bg-white p-6 rounded-lg shadow-sm">
             <h3 class="text-sm font-semibold text-gray-500">Total Pendapatan</h3>
-            <p class="text-3xl font-bold text-gray-800 mt-1">Rp {{ number_format(100000000, 0, ',', '.') }}</p>
+            <p class="text-3xl font-bold text-gray-800 mt-1">Rp {{ number_format($total_pendapatan, 0, ',', '.') }}</p>
             <p class="text-xs text-gray-400 mt-2">Akumulasi dari Awal Berdiri Sistem: Rp {{ number_format(400000000, 0, ',', '.') }}</p>
         </div>
         {{-- Card Penjualan --}}

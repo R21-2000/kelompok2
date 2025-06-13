@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class ProdukController
 {
     /**
-     * Display a listing of the resource.
+     * Tampilkan semua produk.
      */
     public function index()
     {
@@ -17,17 +17,16 @@ class ProdukController
         return view('produk.index', compact('produks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
+     /**
+     * Tampilkan form tambah produk.
      */
     public function create()
     {
         $satuans = Satuan::all();
         return view('produk.create', compact('satuans'));
     }
-
     /**
-     * Store a newly created resource in storage.
+     * Simpan produk baru ke database.
      */
     public function store(Request $request)
     {
@@ -40,11 +39,11 @@ class ProdukController
         ]);
 
         Produk::create($request->all());
-        return redirect()->route('produk.index');
+    return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
     /**
-     * Display the specified resource.
+     * Tampilkan detail produk.
      */
     public function show(Produk $produk)
     {
@@ -53,8 +52,9 @@ class ProdukController
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Tampilkan form edit produk.
      */
+
     public function edit(Produk $produk)
     {
         $satuans = Satuan::all();
@@ -62,7 +62,7 @@ class ProdukController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update produk yang sudah ada.
      */
     public function update(Request $request, Produk $produk)
     {
@@ -79,7 +79,7 @@ class ProdukController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Hapus produk.
      */
     public function destroy(Produk $produk)
     {
