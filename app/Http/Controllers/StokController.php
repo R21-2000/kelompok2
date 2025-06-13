@@ -14,6 +14,10 @@ class StokController
     /**
      * Display a listing of the resource.
      */
+    public function daftar() {
+    return view('OpnameStok.daftar_stok');
+}
+
     public function index()
     {
         $stoks = Stok::with('produk')->get();
@@ -94,4 +98,14 @@ class StokController
          $stok->delete();
         return back();
     }
+    public function masuk() {
+        return $this->index();
+    }
+    public function opname() {
+    $stoks = Stok::with('produk')->get();
+    return view('OpnameStok.opname_stok', compact('stoks'));
+}
+
+
+
 }

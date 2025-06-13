@@ -11,13 +11,13 @@ class PenjualanController
 {
     public function kasir()
     {
-        $penjualans = Penjualan::with('details', 'pengguna')->get();
-        return view('kasir.index', compact('penjualans'));
+        $penjualans = Penjualan::with('penjualanDetails', 'pengguna')->get();
+        return view('kasir', compact('penjualans'));
     }
 
     public function laporan(Request $request)
     {
-        $query = Penjualan::with(['pengguna', 'details']);
+        $query = Penjualan::with(['pengguna', 'penjualanDetails']);
         if ($request->filled(['from', 'to'])) {
             $query->whereBetween('created_at', [$request->from, $request->to]);
         }
@@ -80,4 +80,10 @@ class PenjualanController
     {
         //
     }
+    public function filterLaporan(Request $request)
+    {
+    // Logika sama seperti laporan()
+    return $this->laporan($request);
+    }
+
 }

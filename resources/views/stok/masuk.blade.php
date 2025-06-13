@@ -4,10 +4,19 @@
     {{-- Header Konten --}}
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h2 class="text-3xl font-bold text-gray-800">Masuk Stok</h2>
-        {{-- Tombol Tambah Stok yang sekarang mengarah ke rute /tambah-stok --}}
-        <button onclick="window.location.href='{{ url('/tambah-stok;" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 flex items-center">
-            <i class="fa-solid fa-plus mr-2"></i> Tambah Stok
-        </button>
+        <button
+    type="button"
+    data-href="{{ url('/stok/tambah') }}"
+    onclick="window.location.href=this.dataset.href;"
+    class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 flex items-center">
+    <i class="fa-solid fa-plus mr-2"></i> Tambah Stok
+</button>
+
+
+
+
+
+
     </div>
 
     {{-- Filter dan Tabel Daftar Masuk --}}

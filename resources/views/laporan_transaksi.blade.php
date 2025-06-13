@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@section('title', 'Laporan Transaksi')
+@section('header_title', 'Laporan Transaksi')
 
 @section('content')
     {{-- Header Konten --}}

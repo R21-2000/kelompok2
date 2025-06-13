@@ -11,7 +11,8 @@ class Penjualan extends Model
         'pengguna_id',
         'nama_pelanggan',
         'tanggal_penjualan',
-        'metode_pembayaran'
+        'metode_pembayaran',
+        'waktu_bayar',
     ];
 
     public function pengguna()

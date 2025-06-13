@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@section('title', 'Dashboard')
+@section('header_title', 'Dashboard')
 
 @section('content')
     {{-- Header Konten --}}

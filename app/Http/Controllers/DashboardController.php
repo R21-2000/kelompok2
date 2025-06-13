@@ -20,7 +20,7 @@ class DashboardController extends Controller
 
         // Stok terendah
         $stokTerendah = Stok::with('produk')
-            ->orderBy('jumlah', 'asc')
+            ->orderBy('stok', 'asc')
             ->limit(5)
             ->get();
 
@@ -35,7 +35,7 @@ class DashboardController extends Controller
         // Total pendapatan (penjualan yang sudah dibayar)
         $totalPendapatan = Penjualan::whereBetween('tanggal_penjualan', [$start, $end])
             ->whereNotNull('waktu_bayar')
-            ->with('details')
+            ->with('penjualanDetails')
             ->get()
             ->flatMap->details
             ->sum('subtotal');

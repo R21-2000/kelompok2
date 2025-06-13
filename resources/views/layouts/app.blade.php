@@ -70,12 +70,13 @@
                     <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
                     <span>Daftar Stok</span>
                 </a>
-                {{-- Link Masuk Stok (ke route /masuk-stok) --}}
-                 <a href="{{ url('/masuk-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
-                    {{ request()->is('masuk-stok') || request()->is('tambah-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
-                    <i class="fa-solid fa-dolly w-6 text-center"></i>
+                {{-- Link Masuk Stok (ke route stok.masuk) --}}
+                <a href="{{ route('stok.masuk') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                        {{ request()->routeIs('stok.masuk') || request()->routeIs('stok.create') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
+                        <i class="fa-solid fa-dolly w-6 text-center"></i>
                     <span>Masuk Stok</span>
                 </a>
+
                 {{-- Link Opname Stok (ke route /opname-stok) --}}
                 <a href="{{ url('/opname-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
                     {{ request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">

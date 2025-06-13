@@ -5,6 +5,9 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\DashboardController;
+Route::get('/', function () {
+    return redirect()->route('dashboard');
+});
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -19,7 +22,16 @@ Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
 Route::get('/stok/opname', [StokController::class, 'opname'])->name('stok.opname');
 Route::put('/stok/{id}', [StokController::class, 'update'])->name('stok.update');
 Route::delete('/stok/{id}', [StokController::class, 'destroy'])->name('stok.destroy');
+Route::get('/stok/list', [StokController::class, 'list'])->name('stok.list');
+
 
 Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('kasir');
 Route::get('/laporan', [PenjualanController::class, 'laporan'])->name('laporan');
 Route::get('/laporan/filter', [PenjualanController::class, 'filterLaporan'])->name('laporan.filter');
+
+Route::get('/daftar-stok', function() {
+    return view('OpnameStok.daftar_stok');
+});
+
+Route::get('/opname-stok', [StokController::class, 'opname'])->name('stok.opname');
+
