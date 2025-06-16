@@ -36,4 +36,5 @@ Route::get('/laporan/filter', [PenjualanController::class, 'filterLaporan'])->na
 Route::get('/daftar-stok', [StokController::class, 'daftarStok'])->name('stok.daftar');
 
 Route::get('/opname-stok', [StokController::class, 'opname'])->name('stok.opname');
+Route::post('/opname-stok', [StokController::class, 'storeOpname'])->name('stok.storeOpname');
 

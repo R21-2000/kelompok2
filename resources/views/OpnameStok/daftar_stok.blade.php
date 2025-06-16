@@ -34,11 +34,11 @@
                     <input type="date" name="end_date" class="w-full p-2 border border-gray-300 rounded-md" value="{{ $endDate }}">
                 </div>
 
-                {{-- Dropdown Jumlah Stok --}}
+                {{-- Dropdown Jumlah Stok (dibuat 'range' sebagai default) --}}
                 <div class="relative w-full md:w-auto">
                     <select id="jumlah_stok_filter" class="w-full p-2 border border-gray-300 rounded-md" onchange="toggleStockRangeInputs()">
-                        <option value="all" {{ !request()->has('min_stok') ? 'selected' : '' }}>Semua Jumlah Stok</option>
-                        <option value="range" {{ request()->has('min_stok') ? 'selected' : '' }}>Rentang Jumlah Stok Akhir</option>
+                        <option value="all" {{ request()->has('min_stok') ? '' : '' }}>Semua Jumlah Stok</option>
+                        <option value="range" {{ request()->has('min_stok') || !request()->query() ? 'selected' : '' }}>Rentang Jumlah Stok Akhir</option>
                     </select>
                 </div>
                 <button type="submit" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md">
@@ -46,8 +46,8 @@
                 </button>
             </div>
 
-            {{-- Input Rentang Jumlah Stok (muncul saat 'Rentang' dipilih) --}}
-            <div id="stock_range_inputs" class="{{ request()->has('min_stok') ? '' : 'hidden' }} grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 items-end">
+            {{-- Input Rentang Jumlah Stok (dihilangkan class 'hidden' defaultnya) --}}
+            <div id="stock_range_inputs" class="{{ (request()->has('min_stok') || !request()->query()) ? '' : 'hidden' }} grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 items-end">
                 <div>
                     <label for="min_stok" class="block text-sm font-semibold text-gray-700 mb-1">MIN Stok Akhir</label>
                     <input type="number" name="min_stok" class="w-full p-2 border border-gray-300 rounded-md" placeholder="0" value="{{ request('min_stok') }}">
@@ -75,6 +75,8 @@
                         <th scope="col" class="px-4 py-3">Satuan</th>
                     </tr>
                 </thead>
+                {{-- resources/views/OpnameStok/daftar_stok.blade.php --}}
+
                 <tbody>
                     @forelse ($laporanStok as $item)
                         <tr class="bg-white border-b hover:bg-gray-50">
@@ -82,8 +84,10 @@
                             <td class="px-4 py-3">{{ $item->nama_produk }}</td>
                             <td class="px-4 py-3">{{ $item->jenis }}</td>
                             <td class="px-4 py-3 text-right">{{ $item->stok_awal }}</td>
-                            <td class="px-4 py-3 text-right text-green-600">{{ $item->stok_masuk }}</td>
-                            <td class="px-4 py-3 text-right text-red-600">{{ $item->stok_terjual }}</td>
+                            {{-- [PERBAIKAN] Ganti nama variabel --}}
+                            <td class="px-4 py-3 text-right text-green-600">{{ $item->stok_masuk_periode }}</td>
+                            {{-- [PERBAIKAN] Ganti nama variabel --}}
+                            <td class="px-4 py-3 text-right text-red-600">{{ $item->stok_terjual_periode }}</td>
                             <td class="px-4 py-3 text-right">{{ $item->stok_opname }}</td>
                             <td class="px-4 py-3 text-right font-semibold">{{ $item->stok_akhir }}</td>
                             <td class="px-4 py-3">{{ $item->satuan->nama_satuan }}</td>
