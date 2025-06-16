@@ -11,9 +11,49 @@ class ProdukController
     /**
      * Tampilkan semua produk.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $produks = Produk::with('satuan')->get();
+        // Mulai query ke model Produk
+        $query = Produk::query();
+
+        // 1. Logika untuk PENCARIAN
+        // Jika ada input 'search' di URL
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            // Cari berdasarkan nama_produk ATAU sku
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('nama_produk', 'like', "%{$searchTerm}%")
+                  ->orWhere('sku', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // 2. Logika untuk PENGURUTAN
+        // Jika ada input 'sort' di URL
+        if ($request->filled('sort')) {
+            $sortOption = $request->input('sort');
+            switch ($sortOption) {
+                case 'nama_asc':
+                    $query->orderBy('nama_produk', 'asc');
+                    break;
+                case 'nama_desc':
+                    $query->orderBy('nama_produk', 'desc');
+                    break;
+                case 'harga_asc':
+                    $query->orderBy('harga_satuan', 'asc');
+                    break;
+                case 'harga_desc':
+                    $query->orderBy('harga_satuan', 'desc');
+                    break;
+            }
+        } else {
+            // Urutan default jika tidak ada pilihan sort
+            $query->orderBy('created_at', 'desc');
+        }
+
+        // Ambil hasil query, jangan lupa relasi 'satuan'
+        $produks = $query->with('satuan')->get();
+
+        // Kirim data produk yang sudah difilter/diurutkan ke view
         return view('produk.index', compact('produks'));
     }
 
@@ -75,7 +115,7 @@ class ProdukController
         ]);
 
         $produk->update($request->all());
-        return redirect()->route('produk.index');
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui!');
     }
 
     /**

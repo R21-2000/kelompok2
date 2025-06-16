@@ -8,27 +8,46 @@ use Illuminate\Http\Request;
 class SatuanController
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua satuan.
+     * Fungsi ini akan dipanggil saat Anda membuka menu Satuan.
      */
     public function index()
     {
-        //
+        // 1. Ambil semua data dari model Satuan
+        $satuans = Satuan::all();
+
+        // 2. Tampilkan view 'satuan.index' dan kirim data $satuans ke dalamnya
+        return view('satuan.index', compact('satuans'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan formulir untuk membuat satuan baru.
+     * Fungsi ini akan dipanggil saat Anda klik tombol "+ Tambah Satuan".
      */
     public function create()
     {
-        //
+        // Cukup tampilkan view 'satuan.create' yang berisi form
+        return view('satuan.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan satuan baru ke dalam database.
+     * Fungsi ini akan dipanggil saat Anda klik "Simpan" pada form tambah satuan.
      */
     public function store(Request $request)
     {
-        //
+        // 1. Validasi input: pastikan 'nama_satuan' diisi dan unik (tidak boleh sama)
+        $request->validate([
+            'nama_satuan' => 'required|unique:satuans,nama_satuan'
+        ]);
+
+        // 2. Buat data baru di database menggunakan model Satuan
+        Satuan::create([
+            'nama_satuan' => $request->nama_satuan,
+        ]);
+
+        // 3. Alihkan kembali ke halaman daftar satuan dengan pesan sukses
+        return redirect()->route('satuan.index')->with('success', 'Satuan baru berhasil ditambahkan!');
     }
 
     /**
@@ -36,7 +55,7 @@ class SatuanController
      */
     public function show(Satuan $satuan)
     {
-        //
+        // Untuk saat ini tidak digunakan
     }
 
     /**
@@ -44,7 +63,7 @@ class SatuanController
      */
     public function edit(Satuan $satuan)
     {
-        //
+        // Untuk saat ini tidak digunakan
     }
 
     /**
@@ -52,7 +71,7 @@ class SatuanController
      */
     public function update(Request $request, Satuan $satuan)
     {
-        //
+        // Untuk saat ini tidak digunakan
     }
 
     /**
@@ -60,6 +79,6 @@ class SatuanController
      */
     public function destroy(Satuan $satuan)
     {
-        //
+        // Untuk saat ini tidak digunakan
     }
 }

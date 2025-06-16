@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\DashboardController;
 Route::get('/', function () {
@@ -14,6 +15,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
 Route::get('/produk/tambah', [ProdukController::class, 'create'])->name('produk.create');
 Route::post('/produk', [ProdukController::class, 'store'])->name('produk.store');
+Route::resource('produk', ProdukController::class);
+
+Route::resource('satuan', SatuanController::class);
 
 Route::get('/stok', [StokController::class, 'index'])->name('stok.index');
 Route::get('/stok/masuk', [StokController::class, 'masuk'])->name('stok.masuk');
@@ -29,9 +33,7 @@ Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('kasir');
 Route::get('/laporan-transaksi', [PenjualanController::class, 'laporan'])->name('laporan');
 Route::get('/laporan/filter', [PenjualanController::class, 'filterLaporan'])->name('laporan.filter');
 
-Route::get('/daftar-stok', function() {
-    return view('OpnameStok.daftar_stok');
-});
+Route::get('/daftar-stok', [StokController::class, 'daftarStok'])->name('stok.daftar');
 
 Route::get('/opname-stok', [StokController::class, 'opname'])->name('stok.opname');
 

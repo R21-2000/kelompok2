@@ -3,64 +3,59 @@
 @section('content')
     {{-- Header Konten --}}
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h2 class="text-3xl font-bold text-gray-800">Masuk Stok</h2>
-        <button
-    type="button"
-    data-href="{{ url('/stok/tambah') }}"
-    onclick="window.location.href=this.dataset.href;"
-    class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 flex items-center">
-    <i class="fa-solid fa-plus mr-2"></i> Tambah Stok
-</button>
-
-
-
-
-
-
+        <h2 class="text-3xl font-bold text-gray-800">Tambah Stok Masuk</h2>
+        {{-- Tombol untuk kembali ke halaman daftar stok --}}
+        <a href="{{ url('/daftar-stok') }}" class="text-gray-400 hover:text-gray-600">
+            <i class="fa-solid fa-times text-2xl"></i>
+        </a>
     </div>
 
-    {{-- Filter dan Tabel Daftar Masuk --}}
-    <div class="bg-white p-6 rounded-lg shadow-sm">
-        {{-- Area Filter --}}
-        <div class="flex flex-col md:flex-row items-center gap-4 mb-6">
-            <div class="relative w-full md:w-1/3">
-                <input type="text" placeholder="Cari..." class="w-full p-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-orange-dark">
-                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    {{-- Formulir dihubungkan ke route 'stok.store' dengan metode POST --}}
+    <form action="{{ route('stok.store') }}" method="POST" class="bg-white p-6 rounded-lg shadow-sm">
+        @csrf {{-- Token CSRF wajib untuk keamanan --}}
+
+        {{-- Menampilkan error validasi jika ada --}}
+        @if ($errors->any())
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                <p class="font-bold">Terjadi Kesalahan:</p>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>- {{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            <div class="relative w-full md:w-auto flex items-center">
-                <input type="text" value="01 Mei 2025 - 31 Mei 2025" class="w-full p-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-orange-dark">
-                <i class="fa-solid fa-calendar-alt absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        @endif
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {{-- Dropdown untuk memilih produk --}}
+            <div class="md:col-span-2">
+                <label for="produk_id" class="block text-sm font-semibold text-gray-700 mb-2">Pilih Produk</label>
+                {{-- Dropdown ini akan diisi oleh variabel $produks dari StokController@create --}}
+                <select name="produk_id" id="produk_id" class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" required>
+                    <option value="">-- Pilih Produk yang Akan Ditambah Stoknya --</option>
+                    @foreach($produks as $produk)
+                        <option value="{{ $produk->id }}">{{ $produk->nama_produk }} (SKU: {{ $produk->sku }})</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            {{-- Input untuk jumlah stok yang ditambahkan --}}
+            <div class="md:col-span-2">
+                <label for="jumlah" class="block text-sm font-semibold text-gray-700 mb-2">Jumlah Stok yang Ditambahkan</label>
+                {{-- Nama input "jumlah" sesuai dengan yang dibutuhkan oleh StokController@store --}}
+                <input type="number" name="jumlah" id="jumlah" class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" placeholder="Contoh: 10" required min="1">
             </div>
         </div>
 
-        {{-- Tabel Daftar Masuk --}}
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-600">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-4 py-3">Tanggal</th>
-                        <th scope="col" class="px-4 py-3">Nama</th>
-                        <th scope="col" class="px-4 py-3">Jenis</th>
-                        <th scope="col" class="px-4 py-3 text-right">Stok Masuk</th>
-                        <th scope="col" class="px-4 py-3 text-right">Stok Akhir</th>
-                        <th scope="col" class="px-4 py-3">Satuan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{-- Contoh baris data, ulangi ini untuk setiap item masuk stok --}}
-                    @for ($i = 0; $i < 5; $i++)
-                    <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-4 py-3">{{ date('d M Y', strtotime('-' . $i . ' days')) }}</td>
-                        <td class="px-4 py-3 font-medium text-gray-900">Produk Masuk {{ $i + 1 }}</td>
-                        <td class="px-4 py-3">{{ ['Makanan Ringan', 'Minuman', 'Dessert'][$i % 3] }}</td>
-                        <td class="px-4 py-3 text-right">{{ rand(10, 50) }}</td>
-                        <td class="px-4 py-3 text-right">{{ rand(50, 200) }}</td>
-                        <td class="px-4 py-3">{{ ['Pieces', 'Boxes', 'Pcs'][$i % 3] }}</td>
-                    </tr>
-                    @endfor
-                    {{-- Akhir contoh baris data --}}
-                </tbody>
-            </table>
+        {{-- Tombol Aksi --}}
+        <div class="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
+            <a href="{{ url('/daftar-stok') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md shadow-md transition duration-300">
+                Batal
+            </a>
+            <button type="submit" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-6 rounded-md shadow-md transition duration-300">
+                Simpan
+            </button>
         </div>
-    </div>
+    </form>
 @endsection

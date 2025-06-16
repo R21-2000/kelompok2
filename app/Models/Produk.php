@@ -21,6 +21,11 @@ class Produk extends Model
         return $this->belongsTo(Satuan::class);
     }
 
+    public function stok()
+    {
+        return $this->hasOne(Stok::class);
+    }
+
     // Relasi: produk memiliki banyak detail penjualan
     public function penjualanDetails()
     {

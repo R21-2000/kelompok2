@@ -4,54 +4,60 @@
     {{-- Header Konten --}}
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h2 class="text-3xl font-bold text-gray-800">Daftar Stok</h2>
-        {{-- Tombol sekarang mengarah ke rute /tambah-stok dan teksnya diubah --}}
-        <a href="{{ url('/opname-stok') }}"
-   class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 flex items-center">
-   <i class="fa-solid fa-plus mr-2"></i> Tambah Stok
-</a>
-
+        <a href="{{ route('stok.create') }}"
+           class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 flex items-center">
+            <i class="fa-solid fa-plus mr-2"></i> Tambah Stok
+        </a>
     </div>
+
+    @if (session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+    @endif
 
     {{-- Filter dan Tabel Daftar Stok --}}
     <div class="bg-white p-6 rounded-lg shadow-sm">
         {{-- Area Filter --}}
-        <div class="flex flex-col md:flex-row items-center gap-4 mb-6">
-            <div class="relative w-full md:w-1/3">
-                <input type="text" placeholder="Cari..." class="w-full p-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-orange-dark">
-                <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            </div>
-            <div class="relative w-full md:w-auto flex items-center">
-                <input type="text" value="01 Mei 2025 - 31 Mei 2025" class="w-full p-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-orange-dark">
-                <i class="fa-solid fa-calendar-alt absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            </div>
-            {{-- Dropdown Jumlah Stok --}}
-            <div class="relative w-full md:w-auto">
-                <select id="jumlah_stok_filter" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-orange-dark" onchange="toggleStockRangeInputs()">
-                    <option value="all">Jumlah Stok</option>
-                    <option value="range">Rentang Jumlah Stok Akhir</option>
-                </select>
-            </div>
-        </div>
+        <form action="{{ route('stok.daftar') }}" method="GET">
+            <div class="flex flex-col md:flex-row items-center gap-4 mb-6">
+                {{-- Filter Pencarian --}}
+                <div class="relative w-full md:w-1/3">
+                    <input type="text" name="search" placeholder="Cari SKU atau Nama Produk..." class="w-full p-2 pl-10 border border-gray-300 rounded-md" value="{{ request('search') }}">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+                
+                {{-- Filter Tanggal --}}
+                <div class="flex items-center gap-2">
+                    <input type="date" name="start_date" class="w-full p-2 border border-gray-300 rounded-md" value="{{ $startDate }}">
+                    <span>-</span>
+                    <input type="date" name="end_date" class="w-full p-2 border border-gray-300 rounded-md" value="{{ $endDate }}">
+                </div>
 
-        {{-- Input Rentang Jumlah Stok (hidden by default) --}}
-        <div id="stock_range_inputs" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 hidden">
-            <div>
-                <label for="min_stok" class="block text-sm font-semibold text-gray-700 mb-2">MIN</label>
-                <input type="number" id="min_stok" class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" placeholder="0">
-            </div>
-            <div>
-                <label for="maks_stok" class="block text-sm font-semibold text-gray-700 mb-2">MAKS</label>
-                <input type="number" id="maks_stok" class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" placeholder="0">
-            </div>
-            <div class="md:col-span-2 flex justify-end gap-4">
-                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-md shadow-md transition duration-300">
-                    Reset
-                </button>
-                <button class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-6 rounded-md shadow-md transition duration-300">
-                    Proses
+                {{-- Dropdown Jumlah Stok --}}
+                <div class="relative w-full md:w-auto">
+                    <select id="jumlah_stok_filter" class="w-full p-2 border border-gray-300 rounded-md" onchange="toggleStockRangeInputs()">
+                        <option value="all" {{ !request()->has('min_stok') ? 'selected' : '' }}>Semua Jumlah Stok</option>
+                        <option value="range" {{ request()->has('min_stok') ? 'selected' : '' }}>Rentang Jumlah Stok Akhir</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-brand-orange hover:bg-brand-orange-dark text-white font-bold py-2 px-4 rounded-md">
+                    Filter
                 </button>
             </div>
-        </div>
+
+            {{-- Input Rentang Jumlah Stok (muncul saat 'Rentang' dipilih) --}}
+            <div id="stock_range_inputs" class="{{ request()->has('min_stok') ? '' : 'hidden' }} grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 items-end">
+                <div>
+                    <label for="min_stok" class="block text-sm font-semibold text-gray-700 mb-1">MIN Stok Akhir</label>
+                    <input type="number" name="min_stok" class="w-full p-2 border border-gray-300 rounded-md" placeholder="0" value="{{ request('min_stok') }}">
+                </div>
+                <div>
+                    <label for="max_stok" class="block text-sm font-semibold text-gray-700 mb-1">MAKS Stok Akhir</label>
+                    <input type="number" name="max_stok" class="w-full p-2 border border-gray-300 rounded-md" placeholder="999" value="{{ request('max_stok') }}">
+                </div>
+            </div>
+        </form>
 
         {{-- Tabel Daftar Stok --}}
         <div class="overflow-x-auto">
@@ -70,19 +76,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Contoh baris data --}}
-                    <tr class="bg-white border-b hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium text-gray-900">MK1</td>
-                        <td class="px-4 py-3">Kue Leker</td>
-                        <td class="px-4 py-3">Makanan Ringan</td>
-                        <td class="px-4 py-3 text-right">31</td>
-                        <td class="px-4 py-3 text-right">5</td>
-                        <td class="px-4 py-3 text-right">34</td>
-                        <td class="px-4 py-3 text-right">0</td>
-                        <td class="px-4 py-3 text-right">2</td>
-                        <td class="px-4 py-3">Pieces</td>
-                    </tr>
-                    {{-- Akhir contoh baris data --}}
+                    @forelse ($laporanStok as $item)
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-4 py-3 font-medium text-gray-900">{{ $item->sku }}</td>
+                            <td class="px-4 py-3">{{ $item->nama_produk }}</td>
+                            <td class="px-4 py-3">{{ $item->jenis }}</td>
+                            <td class="px-4 py-3 text-right">{{ $item->stok_awal }}</td>
+                            <td class="px-4 py-3 text-right text-green-600">{{ $item->stok_masuk }}</td>
+                            <td class="px-4 py-3 text-right text-red-600">{{ $item->stok_terjual }}</td>
+                            <td class="px-4 py-3 text-right">{{ $item->stok_opname }}</td>
+                            <td class="px-4 py-3 text-right font-semibold">{{ $item->stok_akhir }}</td>
+                            <td class="px-4 py-3">{{ $item->satuan->nama_satuan }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center py-10">
+                                <p class="font-semibold text-gray-500">Tidak ada data stok yang ditemukan.</p>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -92,12 +104,13 @@
         function toggleStockRangeInputs() {
             const selectElement = document.getElementById('jumlah_stok_filter');
             const stockRangeInputs = document.getElementById('stock_range_inputs');
-
             if (selectElement.value === 'range') {
                 stockRangeInputs.classList.remove('hidden');
             } else {
                 stockRangeInputs.classList.add('hidden');
             }
         }
+        // Panggil fungsi saat halaman pertama kali dimuat untuk memastikan kondisi filter tetap terlihat jika ada
+        document.addEventListener('DOMContentLoaded', toggleStockRangeInputs);
     </script>
 @endsection

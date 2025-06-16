@@ -63,6 +63,13 @@
                     <span>Produk</span>
                 </a>
 
+                {{-- Link Satuan (ke route satuan.index) --}}
+                <a href="{{ route('satuan.index') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->routeIs('satuan.*') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
+                    <i class="fa-solid fa-box-open w-6 text-center"></i>
+                    <span>Satuan</span>
+                </a>
+
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Inventori</p>
                 {{-- Link Daftar Stok (ke route /daftar-stok) --}}
                 <a href="{{ url('/daftar-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
@@ -70,11 +77,11 @@
                     <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
                     <span>Daftar Stok</span>
                 </a>
-                {{-- Link Masuk Stok (ke route stok.masuk) --}}
-                <a href="{{ route('stok.masuk') }}" class="flex items-center px-4 py-2.5 rounded-lg
-                        {{ request()->routeIs('stok.masuk') || request()->routeIs('stok.create') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
-                        <i class="fa-solid fa-dolly w-6 text-center"></i>
-                    <span>Masuk Stok</span>
+                {{-- Link Tambah Stok (diubah dari Masuk Stok) --}}
+                <a href="{{ route('stok.create') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->routeIs('stok.create') || request()->routeIs('stok.masuk') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
+                    <i class="fa-solid fa-dolly w-6 text-center"></i>
+                    <span>Tambah Stok</span>
                 </a>
 
                 {{-- Link Opname Stok (ke route /opname-stok) --}}
