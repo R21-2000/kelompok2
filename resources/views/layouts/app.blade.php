@@ -15,7 +15,7 @@
                     colors: {
                         'brand-orange': '#E37424',
                         'brand-orange-dark': '#C55A11',
-                        'brand-sidebar': '#3A3A3A', // Warna sidebar saya sesuaikan sedikit agar teks lebih kontras
+                        'brand-sidebar': '#3A3A3A',
                     }
                 }
             }
@@ -24,9 +24,8 @@
     {{-- Font Awesome untuk ikon --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <style>
-        /* Opsi: tambahkan custom style di sini jika perlu */
         body {
-            font-family: 'Poppins', sans-serif; /* Contoh penggunaan font yang lebih modern */
+            font-family: 'Poppins', sans-serif;
         }
     </style>
 </head>
@@ -36,7 +35,6 @@
         {{-- Sidebar --}}
         <aside class="w-64 flex flex-col bg-[#4A3728] text-white">
             <div class="h-20 flex items-center justify-center border-b border-white/10">
-                {{-- Ganti dengan path logo Anda --}}
                 <img src="{{ asset('image/mamina.png') }}" alt="Logo Dapur Mamina" class="h-16 w-16 rounded-full">
             </div>
 
@@ -55,15 +53,25 @@
                     <span>Kasir</span>
                 </a>
 
+                {{-- [UBAHAN] Mulai dari sini --}}
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Laporan</p>
-                 {{-- Link Produk (ke route produk.index) --}}
+                
+                <a href="{{ route('laporan') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->is('laporan*') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
+                    <i class="fa-solid fa-file-alt w-6 text-center"></i>
+                    <span>Laporan</span>
+                </a>
+
+
+                <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Master Data</p>
+                 {{-- Link Produk (dipindahkan ke sini) --}}
                  <a href="{{ route('produk.index') }}" class="flex items-center px-4 py-2.5 rounded-lg
                     {{ request()->is('produk*') || request()->is('tambah-produk') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
-                    <i class="fa-solid fa-file-alt w-6 text-center"></i>
+                    <i class="fa-solid fa-tags w-6 text-center"></i>
                     <span>Produk</span>
                 </a>
 
-                {{-- Link Satuan (ke route satuan.index) --}}
+                {{-- Link Satuan (dipindahkan ke sini) --}}
                 <a href="{{ route('satuan.index') }}" class="flex items-center px-4 py-2.5 rounded-lg
                     {{ request()->routeIs('satuan.*') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-box-open w-6 text-center"></i>
@@ -71,20 +79,20 @@
                 </a>
 
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Inventori</p>
-                {{-- Link Daftar Stok (ke route /daftar-stok) --}}
+                {{-- Link Daftar Stok --}}
                 <a href="{{ url('/daftar-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
                     {{ request()->is('daftar-stok') || request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
                     <span>Daftar Stok</span>
                 </a>
-                {{-- Link Tambah Stok (diubah dari Masuk Stok) --}}
+                {{-- Link Tambah Stok --}}
                 <a href="{{ route('stok.create') }}" class="flex items-center px-4 py-2.5 rounded-lg
                     {{ request()->routeIs('stok.create') || request()->routeIs('stok.masuk') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-dolly w-6 text-center"></i>
                     <span>Tambah Stok</span>
                 </a>
 
-                {{-- Link Opname Stok (ke route /opname-stok) --}}
+                {{-- Link Opname Stok --}}
                 <a href="{{ url('/opname-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
                     {{ request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-tasks w-6 text-center"></i>
@@ -101,7 +109,6 @@
         <div class="flex-1 flex flex-col">
             <header class="h-20 bg-brand-orange flex items-center justify-end px-8">
                  <div class="bg-brand-orange-dark px-6 py-2 rounded-lg shadow-md">
-                    {{-- Menggunakan variabel $header_title untuk judul di header --}}
                     <h1 class="text-xl font-bold text-white">{{ $header_title ?? 'Dashboard' }}</h1>
                 </div>
             </header>
@@ -112,5 +119,20 @@
         </div>
     </div>
 
+    {{-- [BARU] Script untuk Dropdown Sidebar --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const laporanBtn = document.getElementById('laporan-btn');
+            const laporanSubmenu = document.getElementById('laporan-submenu');
+            const laporanChevron = document.getElementById('laporan-chevron');
+
+            laporanBtn.addEventListener('click', function() {
+                // Toggle (tampilkan/sembunyikan) submenu
+                laporanSubmenu.classList.toggle('hidden');
+                // Putar ikon panah
+                laporanChevron.classList.toggle('rotate-180');
+            });
+        });
+    </script>
 </body>
 </html>

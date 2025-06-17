@@ -30,8 +30,13 @@ Route::get('/stok/list', [StokController::class, 'list'])->name('stok.list');
 
 
 Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('kasir');
-Route::get('/laporan-transaksi', [PenjualanController::class, 'laporan'])->name('laporan');
+Route::post('/kasir', [PenjualanController::class, 'store'])->name('kasir.store');
+Route::get('/api/produk', [ProdukController::class, 'searchApi'])->name('produk.searchApi');
+
+Route::get('/laporan', [PenjualanController::class, 'laporan'])->name('laporan');
+Route::get('/laporan-transaksi', [PenjualanController::class, 'laporanTransaksi'])->name('laporan.transaksi');
 Route::get('/laporan/filter', [PenjualanController::class, 'filterLaporan'])->name('laporan.filter');
+Route::get('/laporan/ekspor', [PenjualanController::class, 'eksporPdf'])->name('laporan.ekspor');
 
 Route::get('/daftar-stok', [StokController::class, 'daftarStok'])->name('stok.daftar');
 

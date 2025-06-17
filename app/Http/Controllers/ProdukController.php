@@ -126,4 +126,15 @@ class ProdukController
         $produk->delete();
         return redirect()->route('produk.index');
     }
+
+    public function searchApi(Request $request)
+    {
+        $term = $request->get('term');
+        $produks = Produk::where('nama_produk', 'LIKE', '%' . $term . '%')
+                         ->orWhere('sku', 'LIKE', '%' . $term . '%')
+                         ->limit(10)
+                         ->get(['id', 'nama_produk', 'harga_satuan', 'sku']);
+
+        return response()->json($produks);
+    }
 }
