@@ -22,6 +22,8 @@ Route::middleware('auth')->group(function () {
     // Rute untuk Edit Profil Pengguna
     Route::get('/profile', [AuthController::class, 'showProfileForm'])->name('profile.edit');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    // [TAMBAHKAN INI] Rute untuk Menghapus Akun Sendiri
+    Route::delete('/profile', [AuthController::class, 'destroyProfile'])->name('profile.destroy');
 
 
     Route::get('/', function () {

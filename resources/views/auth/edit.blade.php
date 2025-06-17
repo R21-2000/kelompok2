@@ -57,6 +57,23 @@
                 </button>
             </div>
         </form>
+
+        {{-- [TAMBAHKAN BAGIAN INI] --}}
+        <div class="mt-8 border-t-2 border-red-400 pt-6">
+            <h3 class="text-xl font-bold text-red-700">Zona Berbahaya</h3>
+            <p class="text-gray-600 my-2">Tindakan ini tidak dapat diurungkan. Ini akan menghapus seluruh data Anda secara permanen, termasuk riwayat transaksi dan informasi profil.</p>
+            
+            {{-- Form untuk menghapus akun --}}
+            <form action="{{ route('profile.destroy') }}" method="POST" onsubmit="return confirm('APAKAH ANDA YAKIN?\nSeluruh data Anda akan dihapus selamanya dan tidak dapat dikembalikan.');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                    Hapus Akun Saya
+                </button>
+            </form>
+        </div>
+        {{-- Akhir Zona Berbahaya --}}
+        
     </div>
 </div>
 @endsection

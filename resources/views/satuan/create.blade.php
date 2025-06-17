@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'Satuan')
+@section('header_title', 'Satuan')
+
 @section('content')
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h2 class="text-3xl font-bold text-gray-800">Tambah Satuan Baru</h2>

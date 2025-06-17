@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'Stok')
+@section('header_title', 'Stok')
+
 @section('content')
     {{-- Header Konten --}}
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">

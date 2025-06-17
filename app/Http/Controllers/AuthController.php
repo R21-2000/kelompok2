@@ -118,4 +118,29 @@ class AuthController extends Controller
 
         return redirect('profile')->with('status', 'Profil berhasil diperbarui!');
     }
+
+    /**
+     * [BARU] Menghapus akun pengguna yang sedang login.
+     */
+    public function destroyProfile(Request $request)
+    {
+        // Ambil pengguna yang sedang terautentikasi
+        $user = Auth::user();
+
+        // Lakukan logout terlebih dahulu
+        Auth::logout();
+
+        // Hapus data pengguna dari database
+        if ($user->delete()) {
+            // Hancurkan session
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            // Arahkan ke halaman login dengan pesan sukses
+            return redirect('/login')->with('status', 'Akun Anda telah berhasil dihapus secara permanen.');
+        }
+
+        // Jika gagal, kembalikan ke halaman sebelumnya dengan pesan error
+        return back()->with('error', 'Terjadi kesalahan saat mencoba menghapus akun Anda.');
+    }
 }
