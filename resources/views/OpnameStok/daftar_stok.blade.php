@@ -29,7 +29,7 @@
                     <input type="text" name="search" placeholder="Cari SKU atau Nama Produk..." class="w-full p-2 pl-10 border border-gray-300 rounded-md" value="{{ request('search') }}">
                     <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 </div>
-                
+
                 {{-- Filter Tanggal --}}
                 <div class="flex items-center gap-2">
                     <input type="date" name="start_date" class="w-full p-2 border border-gray-300 rounded-md" value="{{ $startDate }}">
@@ -63,49 +63,44 @@
         </form>
 
         {{-- Tabel Daftar Stok --}}
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-600">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-4 py-3">SKU</th>
-                        <th scope="col" class="px-4 py-3">Nama</th>
-                        <th scope="col" class="px-4 py-3">Jenis</th>
-                        <th scope="col" class="px-4 py-3 text-right">Stok Awal</th>
-                        <th scope="col" class="px-4 py-3 text-right">Stok Masuk</th>
-                        <th scope="col" class="px-4 py-3 text-right">Stok Terjual</th>
-                        <th scope="col" class="px-4 py-3 text-right">Stok Opname</th>
-                        <th scope="col" class="px-4 py-3 text-right">Stok Akhir</th>
-                        <th scope="col" class="px-4 py-3">Satuan</th>
-                    </tr>
-                </thead>
-                {{-- resources/views/OpnameStok/daftar_stok.blade.php --}}
+<div class="overflow-x-auto">
+    <table class="w-full text-sm text-left text-gray-600">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+                <th scope="col" class="px-4 py-3">SKU</th>
+                <th scope="col" class="px-4 py-3">Nama</th>
+                <th scope="col" class="px-4 py-3">Jenis</th>
+                <th scope="col" class="px-4 py-3 text-right">Stok Awal</th>
+                <th scope="col" class="px-4 py-3 text-right">Stok Masuk</th>
+                <th scope="col" class="px-4 py-3 text-right">Stok Terjual</th>
+                <th scope="col" class="px-4 py-3 text-right">Stok Akhir</th>
+                <th scope="col" class="px-4 py-3">Satuan</th>
+            </tr>
+        </thead>
 
-                <tbody>
-                    @forelse ($laporanStok as $item)
-                        <tr class="bg-white border-b hover:bg-gray-50">
-                            <td class="px-4 py-3 font-medium text-gray-900">{{ $item->sku }}</td>
-                            <td class="px-4 py-3">{{ $item->nama_produk }}</td>
-                            <td class="px-4 py-3">{{ $item->jenis }}</td>
-                            <td class="px-4 py-3 text-right">{{ $item->stok_awal }}</td>
-                            {{-- [PERBAIKAN] Ganti nama variabel --}}
-                            <td class="px-4 py-3 text-right text-green-600">{{ $item->stok_masuk_periode }}</td>
-                            {{-- [PERBAIKAN] Ganti nama variabel --}}
-                            <td class="px-4 py-3 text-right text-red-600">{{ $item->stok_terjual_periode }}</td>
-                            <td class="px-4 py-3 text-right">{{ $item->stok_opname }}</td>
-                            <td class="px-4 py-3 text-right font-semibold">{{ $item->stok_akhir }}</td>
-                            <td class="px-4 py-3">{{ $item->satuan->nama_satuan }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="text-center py-10">
-                                <p class="font-semibold text-gray-500">Tidak ada data stok yang ditemukan.</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+        <tbody>
+            @forelse ($laporanStok as $item)
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <td class="px-4 py-3 font-medium text-gray-900">{{ $item->sku }}</td>
+                    <td class="px-4 py-3">{{ $item->nama_produk }}</td>
+                    <td class="px-4 py-3">{{ $item->jenis }}</td>
+                    <td class="px-4 py-3 text-right">{{ $item->stok_awal }}</td>
+                    <td class="px-4 py-3 text-right text-green-600">{{ $item->stok_masuk_periode }}</td>
+                    <td class="px-4 py-3 text-right text-red-600">{{ $item->stok_terjual_periode }}</td>
+                    <td class="px-4 py-3 text-right font-semibold">{{ $item->stok_akhir }}</td>
+                    <td class="px-4 py-3">{{ $item->satuan->nama_satuan }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="9" class="text-center py-10">
+                        <p class="font-semibold text-gray-500">Tidak ada data stok yang ditemukan.</p>
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
 
     <script>
         function toggleStockRangeInputs() {
