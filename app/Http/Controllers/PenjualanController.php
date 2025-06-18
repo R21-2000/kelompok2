@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use App\Models\Pengguna;
-use App\Models\Produk; 
-use App\Models\Stok; 
-use Carbon\Carbon; 
-use Illuminate\Support\Facades\DB; 
+use App\Models\Produk;
+use App\Models\Stok;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PenjualanController
 {
@@ -22,7 +22,7 @@ class PenjualanController
     {
         // Ambil semua produk untuk ditampilkan di dropdown, urutkan berdasarkan nama
         $produks = Produk::orderBy('nama_produk')->get();
-        
+
         // Kirim data produks ke view kasir
         return view('kasir', compact('produks'));
     }
@@ -70,7 +70,7 @@ class PenjualanController
 
         // --- [PERBAIKAN] LOGIKA SORTING ---
         $sort = $request->input('sort', 'terbaru');
-        
+
         if ($sort == 'total_asc' || $sort == 'total_desc') {
             // Jika sort berdasarkan total, kita perlu join dan group
             $direction = ($sort == 'total_asc') ? 'asc' : 'desc';
@@ -249,7 +249,7 @@ class PenjualanController
 
         // --- LOGIKA SORTING (Salin dari method laporan) ---
         $sort = $request->input('sort', 'terbaru');
-        
+
         if ($sort == 'total_asc' || $sort == 'total_desc') {
             $direction = ($sort == 'total_asc') ? 'asc' : 'desc';
             $query->select('penjualans.*', DB::raw('SUM(penjualan_details.subtotal) as total_penjualan'))
@@ -266,8 +266,8 @@ class PenjualanController
 
         // 2. Load view khusus untuk PDF dan kirim datanya
         // Pastikan Anda sudah membuat file 'laporan.pdf_view'
-        $pdf = PDF::loadView('laporan.pdf_view', compact('penjualans'));
-        
+        $pdf = Pdf::loadView('laporan.pdf_view', compact('penjualans'));
+
         // 3. Download PDF dengan nama file dinamis
         return $pdf->download('laporan-penjualan-' . date('Y-m-d') . '.pdf');
     }

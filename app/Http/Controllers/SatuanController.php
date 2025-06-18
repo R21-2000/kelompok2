@@ -63,7 +63,7 @@ class SatuanController
      */
     public function edit(Satuan $satuan)
     {
-        // Untuk saat ini tidak digunakan
+        return view('satuan.edit', compact('satuan'));
     }
 
     /**
@@ -71,7 +71,18 @@ class SatuanController
      */
     public function update(Request $request, Satuan $satuan)
     {
-        // Untuk saat ini tidak digunakan
+        // 1. Validasi input: pastikan 'nama_satuan' diisi dan unik (tidak boleh sama)
+        $request->validate([
+            'nama_satuan' => 'required|unique:satuans,nama_satuan,' . $satuan->id
+        ]);
+
+        // 2. Update data di database menggunakan model Satuan
+        $satuan->update([
+            'nama_satuan' => $request->nama_satuan,
+        ]);
+
+        // 3. Alihkan kembali ke halaman daftar satuan dengan pesan sukses
+        return redirect()->route('satuan.index')->with('success', 'Satuan berhasil diperbarui!');
     }
 
     /**
@@ -79,6 +90,7 @@ class SatuanController
      */
     public function destroy(Satuan $satuan)
     {
-        // Untuk saat ini tidak digunakan
+        $satuan->delete();
+        return redirect()->route('satuan.index')->with('success', 'Satuan berhasil dihapus!');
     }
 }

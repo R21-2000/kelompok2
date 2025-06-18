@@ -46,10 +46,14 @@
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 {{ $satuan->nama_satuan }}
                             </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                {{-- Tombol aksi seperti edit atau hapus bisa ditambahkan di sini --}}
-                                <p class="text-gray-500">-</p>
-                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm flex gap-2">
+                                <a href="{{ route('satuan.edit', $satuan->id) }}" class="text-blue-600 hover:text-blue-800">Edit</a>
+                                <form action="{{ route('satuan.destroy', $satuan->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus satuan ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-800">Hapus</button>
+                            </form>
+                        </td>
                         </tr>
                     @empty
                         <tr>
