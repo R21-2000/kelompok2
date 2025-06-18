@@ -6,18 +6,35 @@
     {{-- Header Konten --}}
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h2 class="text-3xl font-bold text-gray-800">Dashboard</h2>
-        <div class="flex items-center gap-2">
-            <div class="flex bg-white border border-gray-300 rounded-md">
-                <button class="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-l-md">Harian</button>
-                <button class="px-4 py-2 text-sm font-semibold text-gray-500 hover:bg-gray-50">Mingguan</button>
-                <button class="px-4 py-2 text-sm font-semibold text-gray-500 hover:bg-gray-50 rounded-r-md">Bulan</button>
+
+        {{-- Form Filter --}}
+        <form action="{{ route('dashboard.index') }}" method="GET" class="flex items-center gap-2">
+            {{-- Tombol Harian, Mingguan, Bulanan --}}
+            <div class="flex bg-white border border-gray-300 rounded-md overflow-hidden">
+                <button type="submit" name="filter" value="daily"
+                    class="px-4 py-2 text-sm font-semibold {{ request('filter') == 'daily' ? 'bg-gray-200 text-gray-700' : 'text-gray-500 hover:bg-gray-50' }}">
+                    Harian
+                </button>
+                <button type="submit" name="filter" value="weekly"
+                    class="px-4 py-2 text-sm font-semibold {{ request('filter') == 'weekly' ? 'bg-gray-200 text-gray-700' : 'text-gray-500 hover:bg-gray-50' }}">
+                    Mingguan
+                </button>
+                <button type="submit" name="filter" value="monthly"
+                    class="px-4 py-2 text-sm font-semibold {{ request('filter') == 'monthly' ? 'bg-gray-200 text-gray-700' : 'text-gray-500 hover:bg-gray-50' }}">
+                    Bulan
+                </button>
             </div>
-            <div class="flex items-center bg-white border border-gray-300 rounded-md px-3 py-2 text-sm">
-                <i class="fa-solid fa-chevron-left text-gray-400 cursor-pointer"></i>
-                <span class="mx-3 font-semibold text-gray-700">24 Mei 25 - 25 Mei 25</span>
-                <i class="fa-solid fa-chevron-right text-gray-400 cursor-pointer"></i>
-            </div>
-        </div>
+
+            {{-- Input Tanggal Range --}}
+            <input type="date" name="start_date" value="{{ request('start_date') ?? $start }}"
+                class="border border-gray-300 rounded-md px-3 py-2 text-sm">
+            <span class="text-gray-500">-</span>
+            <input type="date" name="end_date" value="{{ request('end_date') ?? $end }}"
+                class="border border-gray-300 rounded-md px-3 py-2 text-sm">
+
+            <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700">Filter</button>
+        </form>
     </div>
 
     {{-- Kartu Statistik --}}
@@ -76,33 +93,33 @@
 
     {{-- Script Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const canvas = document.getElementById('chartPenjualan');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
+    <script>
+        const canvas = document.getElementById('chartPenjualan');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
 
-        const labels = @json($penjualanHarian->pluck('tanggal'));
-        const data = @json($penjualanHarian->pluck('total'));
+            const labels = @json($penjualanHarian->pluck('tanggal'));
+            const data = @json($penjualanHarian->pluck('total'));
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Pendapatan Harian',
-                    data: data,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true,
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
-</script>
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pendapatan Harian',
+                        data: data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    </script>
 
 @endsection

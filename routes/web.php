@@ -61,4 +61,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/opname-stok', [StokController::class, 'opname'])->name('stok.opname');
     Route::post('/opname-stok', [StokController::class, 'storeOpname'])->name('stok.storeOpname');
+
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
 });
