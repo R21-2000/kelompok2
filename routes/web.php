@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/', function () {
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard.index');
     });
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
