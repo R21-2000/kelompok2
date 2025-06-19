@@ -33,61 +33,46 @@ class PenjualanController
     // app/Http/Controllers/PenjualanController.php
 
     public function laporan(Request $request)
-    {
-        // Eager load relasi yang dibutuhkan
-        $query = Penjualan::with(['pengguna', 'penjualanDetails.produk']);
+{
+    $query = Penjualan::with(['pengguna', 'penjualanDetails.produk'])
+        ->withSum('penjualanDetails as total_penjualan', 'subtotal');
 
-        // --- LOGIKA FILTER ---
-        if ($request->filled('nama_pelanggan')) {
-            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
-        }
-
-        if ($request->filled('metode_pembayaran')) {
-            $query->where('metode_pembayaran', $request->metode_pembayaran);
-        }
-
-        if ($request->filled('dari') && $request->filled('hingga')) {
-            // Pastikan format tanggal benar sebelum query
-            $dari = \Carbon\Carbon::parse($request->dari)->startOfDay();
-            $hingga = \Carbon\Carbon::parse($request->hingga)->endOfDay();
-            $query->whereBetween('waktu_bayar', [$dari, $hingga]);
-        }
-
-        // [PERBAIKAN] Blok filter Total Penjualan
-        if ($request->filled('minimal') || $request->filled('maksimal')) {
-            $query->whereHas('penjualanDetails', function ($q) use ($request) {
-                // Kelompokkan detail berdasarkan penjualan untuk menghitung total
-                $q->groupBy('penjualan_id');
-                if ($request->filled('minimal')) {
-                    $q->havingRaw('SUM(subtotal) >= ?', [$request->minimal]);
-                }
-                if ($request->filled('maksimal')) {
-                    $q->havingRaw('SUM(subtotal) <= ?', [$request->maksimal]);
-                }
-            });
-        }
-
-
-        // --- [PERBAIKAN] LOGIKA SORTING ---
-        $sort = $request->input('sort', 'terbaru');
-
-        if ($sort == 'total_asc' || $sort == 'total_desc') {
-            // Jika sort berdasarkan total, kita perlu join dan group
-            $direction = ($sort == 'total_asc') ? 'asc' : 'desc';
-            $query->select('penjualans.*', DB::raw('SUM(penjualan_details.subtotal) as total_penjualan'))
-                ->join('penjualan_details', 'penjualans.id', '=', 'penjualan_details.penjualan_id')
-                ->groupBy('penjualans.id') // Group berdasarkan semua kolom penjualan atau ID-nya
-                ->orderBy('total_penjualan', $direction);
-        } else {
-            // Sort berdasarkan waktu transaksi
-            $direction = ($sort == 'terlama') ? 'asc' : 'desc';
-            $query->orderBy('waktu_bayar', $direction);
-        }
-
-        $penjualans = $query->get();
-
-        return view('laporan.index', compact('penjualans'));
+    if ($request->filled('nama_pelanggan')) {
+        $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
     }
+
+    if ($request->filled('metode_pembayaran')) {
+        $query->where('metode_pembayaran', $request->metode_pembayaran);
+    }
+
+    if ($request->filled('dari') && $request->filled('hingga')) {
+        $dari = Carbon::parse($request->dari)->startOfDay();
+        $hingga = Carbon::parse($request->hingga)->endOfDay();
+        $query->whereBetween('waktu_bayar', [$dari, $hingga]);
+    }
+
+    // Sorting
+    $sort = $request->input('sort', 'terbaru');
+    if ($sort == 'total_asc' || $sort == 'total_desc') {
+        $query->orderBy('total_penjualan', $sort == 'total_asc' ? 'asc' : 'desc');
+    } else {
+        $query->orderBy('waktu_bayar', $sort == 'terlama' ? 'asc' : 'desc');
+    }
+
+    $penjualans = $query->get();
+
+    // Filter total_penjualan DI COLLECTION
+    if ($request->filled('minimal')) {
+        $penjualans = $penjualans->filter(fn($p) => $p->total_penjualan >= $request->minimal);
+    }
+    if ($request->filled('maksimal')) {
+        $penjualans = $penjualans->filter(fn($p) => $p->total_penjualan <= $request->maksimal);
+    }
+
+    return view('laporan.index', compact('penjualans'));
+}
+
+
 
     /**
      * Display a listing of the resource.
@@ -132,12 +117,10 @@ class PenjualanController
             $penjualan = Penjualan::create([
                 // Buat nomor transaksi unik
                 'no_transaksi' => 'TRX-' . Carbon::now()->format('YmdHis'),
-                // TODO: Ganti dengan ID pengguna yang sedang login (misal: Auth::id())
-                // Untuk sementara kita gunakan ID 1 karena ada di seeder
                 'pengguna_id' => 1,
                 'nama_pelanggan' => $request->nama_pelanggan ?? 'Walk-in',
                 'tanggal_penjualan' => Carbon::now()->toDateString(),
-                'waktu_bayar' => Carbon::now(), // Langsung dianggap lunas
+                'waktu_bayar' => Carbon::now(),
                 'metode_pembayaran' => $request->metode_pembayaran,
             ]);
 
@@ -150,9 +133,6 @@ class PenjualanController
                     'harga_satuan' => $item['harga'],
                     'subtotal'     => $item['qty'] * $item['harga'],
                 ]);
-
-                // 5. Logika pengurangan stok tidak diperlukan secara eksplisit
-                // karena laporan stok sudah menghitung dari data PenjualanDetail.
             }
 
             DB::commit(); // Jika semua berhasil, simpan perubahan
@@ -160,8 +140,7 @@ class PenjualanController
             return redirect()->route('laporan')->with('success', 'Transaksi berhasil disimpan!');
 
         } catch (\Exception $e) {
-            DB::rollBack(); // Jika ada error, batalkan semua query
-            // Log error jika perlu: Log::error($e->getMessage());
+            DB::rollBack();
             return redirect()->route('kasir')->with('error', 'Error: ' . $e->getMessage());
         }
     }
@@ -214,62 +193,46 @@ class PenjualanController
     }
 
     public function eksporPdf(Request $request)
-    {
-        // 1. Ambil data dengan logika filter & sort yang sama persis seperti method laporan()
-        // ===================================================================================
-        // Inisialisasi query
-        $query = Penjualan::with(['pengguna', 'penjualanDetails.produk']);
+{
+    $query = Penjualan::with(['pengguna', 'penjualanDetails.produk']);
 
-        // --- LOGIKA FILTER (Salin dari method laporan) ---
-        if ($request->filled('nama_pelanggan')) {
-            $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
-        }
-
-        if ($request->filled('metode_pembayaran')) {
-            $query->where('metode_pembayaran', $request->metode_pembayaran);
-        }
-
-        if ($request->filled('dari') && $request->filled('hingga')) {
-            $dari = \Carbon\Carbon::parse($request->dari)->startOfDay();
-            $hingga = \Carbon\Carbon::parse($request->hingga)->endOfDay();
-            $query->whereBetween('waktu_bayar', [$dari, $hingga]);
-        }
-
-        if ($request->filled('minimal') || $request->filled('maksimal')) {
-            $query->whereHas('penjualanDetails', function ($q) use ($request) {
-                $q->groupBy('penjualan_id');
-                if ($request->filled('minimal')) {
-                    $q->havingRaw('SUM(subtotal) >= ?', [$request->minimal]);
-                }
-                if ($request->filled('maksimal')) {
-                    $q->havingRaw('SUM(subtotal) <= ?', [$request->maksimal]);
-                }
-            });
-        }
-
-        // --- LOGIKA SORTING (Salin dari method laporan) ---
-        $sort = $request->input('sort', 'terbaru');
-
-        if ($sort == 'total_asc' || $sort == 'total_desc') {
-            $direction = ($sort == 'total_asc') ? 'asc' : 'desc';
-            $query->select('penjualans.*', DB::raw('SUM(penjualan_details.subtotal) as total_penjualan'))
-                  ->join('penjualan_details', 'penjualans.id', '=', 'penjualan_details.penjualan_id')
-                  ->groupBy('penjualans.id')
-                  ->orderBy('total_penjualan', $direction);
-        } else {
-            $direction = ($sort == 'terlama') ? 'asc' : 'desc';
-            $query->orderBy('waktu_bayar', $direction);
-        }
-
-        $penjualans = $query->get();
-        // ===================================================================================
-
-        // 2. Load view khusus untuk PDF dan kirim datanya
-        // Pastikan Anda sudah membuat file 'laporan.pdf_view'
-        $pdf = Pdf::loadView('laporan.pdf_view', compact('penjualans'));
-
-        // 3. Download PDF dengan nama file dinamis
-        return $pdf->download('laporan-penjualan-' . date('Y-m-d') . '.pdf');
+    if ($request->filled('nama_pelanggan')) {
+        $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
     }
+
+    if ($request->filled('metode_pembayaran')) {
+        $query->where('metode_pembayaran', $request->metode_pembayaran);
+    }
+
+    if ($request->filled('dari') && $request->filled('hingga')) {
+        $dari = Carbon::parse($request->dari)->startOfDay();
+        $hingga = Carbon::parse($request->hingga)->endOfDay();
+        $query->whereBetween('waktu_bayar', [$dari, $hingga]);
+    }
+
+    // Filter + sum + sort sama persis
+    $query->withSum('penjualanDetails as total_penjualan', 'subtotal');
+    if ($request->filled('minimal')) {
+        $query->having('total_penjualan', '>=', $request->minimal);
+    }
+    if ($request->filled('maksimal')) {
+        $query->having('total_penjualan', '<=', $request->maksimal);
+    }
+
+    $sort = $request->input('sort', 'terbaru');
+    if ($sort == 'total_asc' || $sort == 'total_desc') {
+        $direction = $sort == 'total_asc' ? 'asc' : 'desc';
+        $query->orderBy('total_penjualan', $direction);
+    } else {
+        $direction = $sort == 'terlama' ? 'asc' : 'desc';
+        $query->orderBy('waktu_bayar', $direction);
+    }
+
+    $penjualans = $query->get();
+
+    $pdf = Pdf::loadView('laporan.pdf_view', compact('penjualans'));
+
+    return $pdf->download('laporan-penjualan-' . date('Y-m-d') . '.pdf');
+}
 
 }
