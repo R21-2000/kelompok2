@@ -78,6 +78,11 @@
                     <i class="fa-solid fa-dolly w-6 text-center"></i>
                     <span>Tambah Stok</span>
                 </a>
+                 <a href="{{ url('/opname-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
+                    {{ request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
+                    <i class="fa-solid fa-tasks w-6 text-center"></i>
+                    <span>Opname Stok</span>
+                </a>
             </nav>
 
             {{-- [UBAHAN] Bagian User Menu & Logout ada di sini --}}

@@ -63,16 +63,23 @@ class StokController
     }
     return view('OpnameStok.daftar_stok', compact('laporanStok', 'startDate', 'endDate'));
 }
-
-
     /**
      * Tampilkan semua stok masuk.
      */
     public function index()
-    {
-        $stoks = Stok::with('produk')->get();
-        return view('stok.masuk', compact('stoks'));
-    }
+{
+    // Ambil daftar stok + relasi produk
+    $stoks = Stok::with('produk')->get();
+
+    // Kalau ada kolom opname yang mau ditampilkan/hitung, misalnya log terakhir opname:
+    $lastOpname = null; // Misalnya log atau timestamp opname
+
+    return view('stok-index', [
+        'stoks' => $stoks,
+        'lastOpname' => $lastOpname
+    ]);
+}
+
 
     /**
      * Tampilkan form tambah stok baru.
@@ -155,5 +162,41 @@ class StokController
      */
     public function masuk() {
         return $this->index();
+    }
+
+    public function opname() {
+        $produks = Produk::with('satuan')->orderBy('nama_produk')->get();
+        return view('OpnameStok.opname_stok', compact('produks'));
+    }
+
+    public function storeOpname(Request $request)
+    {
+        $request->validate([
+            'stok' => 'required|array',
+            'stok.*' => 'nullable|integer|min:0',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                foreach ($request->stok as $produk_id => $new_stok_value) {
+                    // Hanya proses jika nilainya diisi
+                    if (!is_null($new_stok_value)) {
+                        // 1. Hapus semua catatan stok masuk sebelumnya untuk produk ini
+                        Stok::where('produk_id', $produk_id)->delete();
+
+                        // 2. Buat satu catatan stok baru yang merepresentasikan hasil opname
+                        Stok::create([
+                            'produk_id' => $produk_id,
+                            'stok' => $new_stok_value,
+                        ]);
+                    }
+                }
+            });
+
+            return redirect()->route('stok.daftar')->with('success', 'Stok opname berhasil disimpan!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data opname.');
+        }
     }
 }
