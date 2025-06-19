@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/', function () {
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard.index');
     });
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -43,7 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/stok/masuk', [StokController::class, 'masuk'])->name('stok.masuk');
     Route::get('/stok/tambah', [StokController::class, 'create'])->name('stok.create');
     Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
-    Route::get('/stok/opname', [StokController::class, 'opname'])->name('stok.opname');
     Route::put('/stok/{id}', [StokController::class, 'update'])->name('stok.update');
     Route::delete('/stok/{id}', [StokController::class, 'destroy'])->name('stok.destroy');
     Route::get('/stok/list', [StokController::class, 'list'])->name('stok.list');
@@ -62,4 +61,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/opname-stok', [StokController::class, 'opname'])->name('stok.opname');
     Route::post('/opname-stok', [StokController::class, 'storeOpname'])->name('stok.storeOpname');
+
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
 });

@@ -67,10 +67,9 @@
                     <i class="fa-solid fa-box-open w-6 text-center"></i>
                     <span>Satuan</span>
                 </a>
-
                 <p class="px-4 pt-4 text-xs text-gray-400 uppercase tracking-wider">Inventori</p>
                 <a href="{{ url('/daftar-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
-                    {{ request()->is('daftar-stok') || request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
+                    {{ request()->is('daftar-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
                     <span>Daftar Stok</span>
                 </a>
@@ -78,11 +77,6 @@
                     {{ request()->routeIs('stok.create') || request()->routeIs('stok.masuk') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
                     <i class="fa-solid fa-dolly w-6 text-center"></i>
                     <span>Tambah Stok</span>
-                </a>
-                <a href="{{ url('/opname-stok') }}" class="flex items-center px-4 py-2.5 rounded-lg
-                    {{ request()->is('opname-stok') ? 'bg-brand-orange-dark/50 font-semibold' : 'hover:bg-white/10' }}">
-                    <i class="fa-solid fa-tasks w-6 text-center"></i>
-                    <span>Opname Stok</span>
                 </a>
             </nav>
 

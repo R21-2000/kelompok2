@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
-use App\Models\Pengguna;
+use App\Models\User; // <-- GANTI dari Pengguna jadi User
 use App\Models\Produk;
 use Carbon\Carbon;
 
@@ -13,9 +13,15 @@ class PenjualanSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil 1 pengguna dan 1 produk sebagai contoh
-        $pengguna = Pengguna::first();
+        // Pakai User, bukan Pengguna
+        $pengguna = User::first();
         $produk = Produk::first();
+
+        // Cek dulu, kalau belum ada User atau Produk, skip biar errornya jelas
+        if (!$pengguna || !$produk) {
+            $this->command->info('User atau Produk belum ada. Jalankan UserSeeder & ProdukSeeder dulu.');
+            return;
+        }
 
         // Buat data penjualan
         $penjualan = Penjualan::create([
