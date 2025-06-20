@@ -194,7 +194,8 @@ class PenjualanController
 
     public function eksporPdf(Request $request)
 {
-    $query = Penjualan::with(['pengguna', 'penjualanDetails.produk']);
+    $query = Penjualan::with(['pengguna', 'penjualanDetails.produk'])
+        ->withSum('penjualanDetails as total_penjualan', 'subtotal');
 
     if ($request->filled('nama_pelanggan')) {
         $query->where('nama_pelanggan', 'like', '%' . $request->nama_pelanggan . '%');
@@ -210,29 +211,28 @@ class PenjualanController
         $query->whereBetween('waktu_bayar', [$dari, $hingga]);
     }
 
-    // Filter + sum + sort sama persis
-    $query->withSum('penjualanDetails as total_penjualan', 'subtotal');
-    if ($request->filled('minimal')) {
-        $query->having('total_penjualan', '>=', $request->minimal);
-    }
-    if ($request->filled('maksimal')) {
-        $query->having('total_penjualan', '<=', $request->maksimal);
-    }
-
+    // Sort sama
     $sort = $request->input('sort', 'terbaru');
     if ($sort == 'total_asc' || $sort == 'total_desc') {
-        $direction = $sort == 'total_asc' ? 'asc' : 'desc';
-        $query->orderBy('total_penjualan', $direction);
+        $query->orderBy('total_penjualan', $sort == 'total_asc' ? 'asc' : 'desc');
     } else {
-        $direction = $sort == 'terlama' ? 'asc' : 'desc';
-        $query->orderBy('waktu_bayar', $direction);
+        $query->orderBy('waktu_bayar', $sort == 'terlama' ? 'asc' : 'desc');
     }
 
     $penjualans = $query->get();
+
+    // Filter total_penjualan DI PHP (jangan pakai having)
+    if ($request->filled('minimal')) {
+        $penjualans = $penjualans->filter(fn($p) => $p->total_penjualan >= $request->minimal);
+    }
+    if ($request->filled('maksimal')) {
+        $penjualans = $penjualans->filter(fn($p) => $p->total_penjualan <= $request->maksimal);
+    }
 
     $pdf = Pdf::loadView('laporan.pdf_view', compact('penjualans'));
 
     return $pdf->download('laporan-penjualan-' . date('Y-m-d') . '.pdf');
 }
+
 
 }
